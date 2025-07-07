@@ -73,4 +73,3 @@ may use this for local troubleshooting and testing.
 cd web
 npx chromatic --playwright --project-token={your token here}
 ```
-.

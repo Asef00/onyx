@@ -163,6 +163,7 @@ export const FieldLabel = ({
   label,
   removeLabel,
   vertical,
+  optionalLabel,
 }: {
   subtext?: string | JSX.Element;
   error?: string;
@@ -173,6 +174,7 @@ export const FieldLabel = ({
   label: string;
   removeLabel?: boolean;
   vertical?: boolean;
+  optionalLabel?: string;
 }) => (
   <>
     <div
@@ -186,7 +188,7 @@ export const FieldLabel = ({
             {label}
           </Label>
         )}
-        {optional ? <span>(optional) </span> : ""}
+        {optional ? <span>{optionalLabel || "(optional)"} </span> : ""}
         {tooltip && <ToolTipDetails>{tooltip}</ToolTipDetails>}
       </div>
       {error ? (
@@ -233,6 +235,9 @@ export function TextFormField({
   vertical,
   className,
   showPasswordToggle = false,
+  optionalLabel,
+  hidePasswordLabel,
+  showPasswordLabel,
 }: {
   name: string;
   removeLabel?: boolean;
@@ -261,6 +266,9 @@ export function TextFormField({
   vertical?: boolean;
   className?: string;
   showPasswordToggle?: boolean;
+  optionalLabel?: string;
+  hidePasswordLabel?: string;
+  showPasswordLabel?: string;
 }) {
   let heightString = defaultHeight || "";
   if (isTextArea && !heightString) {
@@ -314,6 +322,7 @@ export function TextFormField({
         label={label}
         removeLabel={removeLabel}
         vertical={vertical}
+        optionalLabel={optionalLabel}
       />
       <div className={`w-full flex ${includeRevert && "gap-x-2"} relative`}>
         <Field
@@ -370,7 +379,11 @@ export function TextFormField({
         {!isTextArea && isPasswordField && showPasswordToggle && (
           <button
             type="button"
-            aria-label={isPasswordVisible ? "Hide password" : "Show password"}
+            aria-label={
+              isPasswordVisible
+                ? hidePasswordLabel || "Hide password"
+                : showPasswordLabel || "Show password"
+            }
             className="absolute right-3 top-1/2 -translate-y-1/2 stroke-text-02 hover:stroke-text-03 mt-0.5"
             onClick={() => setIsPasswordVisible((v) => !v)}
             tabIndex={0}
@@ -428,10 +441,20 @@ export function TypedFileUploadFormField({
   name,
   label,
   subtext,
+  unknownErrorLabel,
+  validationErrorLabel,
+  fileSelectionErrorLabel,
+  noFileTypeDefinitionLabel,
+  validatingFileLabel,
 }: {
   name: string;
   label: string;
   subtext?: string | JSX.Element;
+  unknownErrorLabel?: string;
+  validationErrorLabel?: string;
+  fileSelectionErrorLabel?: string;
+  noFileTypeDefinitionLabel?: string;
+  validatingFileLabel?: string;
 }) {
   const [field, , helpers] = useField<TypedFile | null>(name);
   const [customError, setCustomError] = useState<string>("");
@@ -461,12 +484,16 @@ export function TypedFileUploadFormField({
         if (validation?.isValid) {
           setCustomError("");
         } else {
-          setCustomError(validation?.errors.join(", ") || "Unknown error");
+          setCustomError(
+            validation?.errors.join(", ") || unknownErrorLabel || "Unknown error"
+          );
           helpers.setValue(null);
         }
       } catch (error) {
         setCustomError(
-          error instanceof Error ? error.message : "Validation error"
+          error instanceof Error
+            ? error.message
+            : validationErrorLabel || "Validation error"
         );
         helpers.setValue(null);
       } finally {
@@ -486,14 +513,17 @@ export function TypedFileUploadFormField({
 
     const file = files[0];
     if (!file) {
-      setCustomError("File selection error");
+      setCustomError(fileSelectionErrorLabel || "File selection error");
       return;
     }
 
     const typeDefinitionKey = getFileTypeDefinitionForField(name);
 
     if (!typeDefinitionKey) {
-      setCustomError(`No file type definition found for field: ${name}`);
+      setCustomError(
+        noFileTypeDefinitionLabel ||
+          `No file type definition found for field: ${name}`
+      );
       return;
     }
 
@@ -502,7 +532,9 @@ export function TypedFileUploadFormField({
       helpers.setValue(typedFile);
       setCustomError("");
     } catch (error) {
-      setCustomError(error instanceof Error ? error.message : "Unknown error");
+      setCustomError(
+        error instanceof Error ? error.message : unknownErrorLabel || "Unknown error"
+      );
       helpers.setValue(null);
     } finally {
       setIsValidating(false);
@@ -523,7 +555,7 @@ export function TypedFileUploadFormField({
       {/* Validation feedback */}
       {isValidating && (
         <div className="text-status-info-05 text-sm mt-1">
-          Validating file...
+          {validatingFileLabel || "Validating file..."}
         </div>
       )}
 
@@ -616,6 +648,9 @@ interface MarkdownPreviewProps {
   label: string;
   placeholder?: string;
   error?: string;
+  markdownLabel?: string;
+  writeLabel?: string;
+  previewLabel?: string;
 }
 
 export const MarkdownFormField = ({
@@ -623,6 +658,9 @@ export const MarkdownFormField = ({
   label,
   error,
   placeholder = "Enter your markdown here...",
+  markdownLabel,
+  writeLabel,
+  previewLabel,
 }: MarkdownPreviewProps) => {
   const [field] = useField(name);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
@@ -638,14 +676,16 @@ export const MarkdownFormField = ({
         <div className="flex items-center justify-between px-4 py-2 bg-background-neutral-02 rounded-t-md">
           <div className="flex items-center space-x-2">
             <FaMarkdown className="text-text-03" />
-            <span className="text-sm font-semibold text-text-04">Markdown</span>
+            <span className="text-sm font-semibold text-text-04">
+              {markdownLabel || "Markdown"}
+            </span>
           </div>
           <button
             type="button"
             onClick={togglePreview}
             className="text-sm font-semibold text-text-04 hover:text-text-05 focus:outline-none"
           >
-            {isPreviewOpen ? "Write" : "Preview"}
+            {isPreviewOpen ? writeLabel || "Write" : previewLabel || "Preview"}
           </button>
         </div>
         {isPreviewOpen ? (
@@ -694,6 +734,7 @@ interface BooleanFormFieldProps {
   tooltip?: string;
   disabledTooltip?: string;
   onChange?: (checked: boolean) => void;
+  optionalSuffix?: string;
 }
 
 export const BooleanFormField = memo(function BooleanFormField({
@@ -708,6 +749,7 @@ export const BooleanFormField = memo(function BooleanFormField({
   tooltip,
   disabledTooltip,
   onChange,
+  optionalSuffix,
 }: BooleanFormFieldProps) {
   // Generate a stable, valid id from the field name for label association
   const checkboxId = `checkbox-${name.replace(/[^a-zA-Z0-9_-]/g, "_")}`;
@@ -745,7 +787,7 @@ export const BooleanFormField = memo(function BooleanFormField({
                 htmlFor={checkboxId}
                 small={small}
                 className="cursor-pointer"
-              >{`${label}${optional ? " (Optional)" : ""}`}</Label>
+              >{`${label}${optional ? optionalSuffix || " (Optional)" : ""}`}</Label>
               {tooltip && <ToolTipDetails>{tooltip}</ToolTipDetails>}
             </div>
             {subtext && (
@@ -776,6 +818,7 @@ interface TextArrayFieldProps<T extends Yup.AnyObject> {
   minFields?: number;
   placeholder?: string;
   disabled?: boolean;
+  addNewLabel?: string;
 }
 
 export function TextArrayField<T extends Yup.AnyObject>({
@@ -788,6 +831,7 @@ export function TextArrayField<T extends Yup.AnyObject>({
   minFields = 0,
   placeholder = "",
   disabled = false,
+  addNewLabel,
 }: TextArrayFieldProps<T>) {
   return (
     <div className="mb-4">
@@ -858,7 +902,7 @@ export function TextArrayField<T extends Yup.AnyObject>({
               type="button"
               disabled={disabled}
             >
-              Add New
+              {addNewLabel || "Add New"}
             </CreateButton>
           </div>
         )}
@@ -899,6 +943,8 @@ interface SelectorFormFieldProps {
   fontSize?: "sm" | "md" | "lg";
   small?: boolean;
   disabled?: boolean;
+  selectPlaceholder?: string;
+  noneLabel?: string;
 }
 
 export function SelectorFormField({
@@ -915,6 +961,8 @@ export function SelectorFormField({
   fontSize = "md",
   small = false,
   disabled = false,
+  selectPlaceholder,
+  noneLabel,
 }: SelectorFormFieldProps) {
   const [field] = useField<string>(name);
   const { setFieldValue } = useFormikContext();
@@ -969,7 +1017,7 @@ export function SelectorFormField({
           disabled={disabled}
         >
           <SelectTrigger className={sizeClass.input} disabled={disabled}>
-            <SelectValue placeholder="Select...">
+            <SelectValue placeholder={selectPlaceholder || "Select..."}>
               {currentlySelected?.name || defaultValue || ""}
             </SelectValue>
           </SelectTrigger>
@@ -985,7 +1033,9 @@ export function SelectorFormField({
               container={container}
             >
               {options.length === 0 ? (
-                <SelectItem value="default">Select...</SelectItem>
+                <SelectItem value="default">
+                  {selectPlaceholder || "Select..."}
+                </SelectItem>
               ) : (
                 options.map((option) => (
                   <SelectItem
@@ -1004,7 +1054,7 @@ export function SelectorFormField({
                   value={"__none__"}
                   onSelect={() => setFieldValue(name, null)}
                 >
-                  None
+                  {noneLabel || "None"}
                 </SelectItem>
               )}
             </SelectContent>

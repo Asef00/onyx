@@ -21,6 +21,12 @@ export interface ConfirmEntityModalProps {
   actionButtonText?: string;
 
   removeConfirmationText?: boolean;
+
+  deleteLabel?: string;
+  confirmLabel?: string;
+  deleteActionLabel?: string;
+  confirmActionLabel?: string;
+  confirmationText?: string;
 }
 
 export function ConfirmEntityModal({
@@ -40,13 +46,23 @@ export function ConfirmEntityModal({
   actionButtonText,
 
   removeConfirmationText = false,
+
+  deleteLabel,
+  confirmLabel,
+  deleteActionLabel,
+  confirmActionLabel,
+  confirmationText,
 }: ConfirmEntityModalProps) {
   const buttonText = actionButtonText
     ? actionButtonText
     : danger
-      ? "Delete"
-      : "Confirm";
-  const actionText = action ? action : danger ? "delete" : "modify";
+      ? deleteLabel || "Delete"
+      : confirmLabel || "Confirm";
+  const actionText = action
+    ? action
+    : danger
+      ? deleteActionLabel || "delete"
+      : confirmActionLabel || "modify";
 
   return (
     <Modal
@@ -62,7 +78,13 @@ export function ConfirmEntityModal({
       <div className="flex flex-col gap-4">
         {!removeConfirmationText && (
           <Text as="p">
-            Are you sure you want to {actionText} <b>{entityName}</b>?
+            {confirmationText
+              ? confirmationText.replace("{entityName}", entityName).replace("{actionText}", actionText)
+              : (
+                  <>
+                    Are you sure you want to {actionText} <b>{entityName}</b>?
+                  </>
+                )}
           </Text>
         )}
 

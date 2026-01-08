@@ -1,0 +1,40 @@
+{
+  "common": {
+    "optional": "(optional)",
+    "delete": "Delete",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "select": "Select...",
+    "none": "None",
+    "addNew": "Add New",
+    "markdown": "Markdown",
+    "write": "Write",
+    "preview": "Preview"
+  },
+  "field": {
+    "unknownError": "Unknown error",
+    "validationError": "Validation error",
+    "fileSelectionError": "File selection error",
+    "validatingFile": "Validating file...",
+    "noFileTypeDefinition": "No file type definition found for field: {fieldName}",
+    "hidePassword": "Hide password",
+    "showPassword": "Show password"
+  },
+  "admin": {
+    "pages": {
+      "settings": {
+        "title": "Workspace Settings",
+        "description": "Manage general Onyx settings applicable to all users in the workspace."
+      }
+    }
+  },
+  "components": {
+    "confirmEntityModal": {
+      "delete": "Delete",
+      "confirm": "Confirm",
+      "deleteAction": "delete",
+      "confirmAction": "modify",
+      "confirmationText": "Are you sure you want to {actionText} <b>{entityName}</b>?"
+    }
+  }
+}

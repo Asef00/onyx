@@ -1,0 +1,40 @@
+{
+  "common": {
+    "optional": "(اختیاری)",
+    "delete": "حذف",
+    "confirm": "تأیید",
+    "cancel": "لغو",
+    "select": "انتخاب...",
+    "none": "هیچکدام",
+    "addNew": "افزودن جدید",
+    "markdown": "مارک‌داون",
+    "write": "نوشتن",
+    "preview": "پیش‌نمایش"
+  },
+  "field": {
+    "unknownError": "خطای نامشخص",
+    "validationError": "خطای اعتبارسنجی",
+    "fileSelectionError": "خطا در انتخاب فایل",
+    "validatingFile": "در حال اعتبارسنجی فایل...",
+    "noFileTypeDefinition": "تعریف نوع فایل برای فیلد یافت نشد: {fieldName}",
+    "hidePassword": "مخفی کردن رمز عبور",
+    "showPassword": "نمایش رمز عبور"
+  },
+  "admin": {
+    "pages": {
+      "settings": {
+        "title": "تنظیمات فضای کاری",
+        "description": "مدیریت تنظیمات عمومی Onyx که برای همه کاربران در فضای کاری اعمال می‌شود."
+      }
+    }
+  },
+  "components": {
+    "confirmEntityModal": {
+      "delete": "حذف",
+      "confirm": "تأیید",
+      "deleteAction": "حذف",
+      "confirmAction": "تغییر",
+      "confirmationText": "آیا مطمئن هستید که می‌خواهید {actionText} <b>{entityName}</b> را انجام دهید؟"
+    }
+  }
+}

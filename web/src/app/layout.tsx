@@ -33,6 +33,7 @@ import AccessRestrictedPage from "@/components/errorPages/AccessRestrictedPage";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { fetchAppSidebarMetadata } from "@/lib/appSidebarSS";
 import StatsOverlayLoader from "@/components/dev/StatsOverlayLoader";
+import { NextIntlClientProvider } from "next-intl";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -131,7 +132,9 @@ export default async function RootLayout({
         >
           <div className="text-text min-h-screen bg-background">
             <TooltipProvider>
-              <PHProvider>{content}</PHProvider>
+              <PHProvider>
+                <NextIntlClientProvider>{content}</NextIntlClientProvider>
+              </PHProvider>
             </TooltipProvider>
           </div>
         </ThemeProvider>
